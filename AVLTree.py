@@ -30,8 +30,9 @@ class AVLNode(object):
 	@rtype: bool
 	@returns: False if self is a virtual node, True otherwise.
 	"""
+
 	def is_real_node(self):
-		return False
+		return self.key is not None
 
 
 """
