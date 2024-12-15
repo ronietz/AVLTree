@@ -34,6 +34,12 @@ class AVLNode(object):
 	def is_real_node(self):
 		return self.key is not None
 
+	"""set node height from his children
+	
+	"""
+	def set_height(self):
+		self.height = 1 + max(self.left.height, self.right.height)
+
 
 """
 A class implementing an AVL tree.
@@ -46,6 +52,40 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
+
+	"""
+	set new root
+	@type root: AVLNode
+	"""
+
+	def set_root(self, root):
+		self.root = root
+
+
+	def rotate(self, parent_node, child_node, direction):
+		if direction == "r":
+			sub_tree = child_node.right
+			parent_node.left = sub_tree
+			child_node.right = parent_node
+		else:
+			sub_tree = child_node.left
+			parent_node.right = sub_tree
+			child_node.left = parent_node
+
+		if sub_tree.is_real_node():
+			sub_tree.parent = parent_node
+
+		if parent_node.parent is None:
+			self.set_root(child_node)
+		else:
+			child_node.parent = parent_node.parent
+
+		if parent_node.parent.left == parent_node:
+			parent_node.parent.left = child_node
+		else:
+			parent_node.parent.right = child_node
+		parent_node.parent = child_node
+		return self
 
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the root)
