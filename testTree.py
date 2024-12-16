@@ -127,6 +127,86 @@ def finger_search_test(tree):
         print("finger_search_test - Error in finding root node")
     noy = 5
 
+def create_avl_tree_height_3():
+    root = AVLNode(32, "")
+    root.height = 3
+
+    root.left = AVLNode(16, "")
+    root.left.height = 2
+    root.left.parent = root
+    root.right = AVLNode(48, "")
+    root.right.height = 2
+    root.right.parent = root
+
+    root.left.left = AVLNode(8, "")
+    root.left.left.height = 1
+    root.left.left.parent = root.left
+    root.left.right = AVLNode(24, "")
+    root.left.right.height = 1
+    root.left.right.parent = root.left
+    root.right.left = AVLNode(40, "")
+    root.right.left.height = 1
+    root.right.left.parent = root.right
+    root.right.right = AVLNode(56, "")
+    root.right.right.height = 1
+    root.right.right.parent = root.right
+
+
+    root.left.left.left = AVLNode(4, "")
+    root.left.left.left.height = 0
+    root.left.left.left.parent = root.left.left
+    root.left.left.right = AVLNode(12, "")
+    root.left.left.right.height = 0
+    root.left.left.right.parent = root.left.left
+    root.left.right.left = AVLNode(20, "")
+    root.left.right.left.height = 0
+    root.left.right.left.parent = root.left.right
+    root.left.right.right = AVLNode(28, "")
+    root.left.right.right.height = 0
+    root.left.right.right.parent = root.left.right
+    root.right.left.left = AVLNode(36, "")
+    root.right.left.left.height = 0
+    root.right.left.left.parent = root.right.left
+    root.right.left.right = AVLNode(44, "")
+    root.right.left.right.height = 0
+    root.right.left.right.parent = root.right.left
+    root.right.right.left = AVLNode(52, "")
+    root.right.right.left.height = 0
+    root.right.right.left.parent = root.right.right
+    root.right.right.right = AVLNode(60, "")
+    root.right.right.right.height = 0
+    root.right.right.right.parent = root.right.right
+
+    empty = AVLNode(None, None)
+    empty.height = -1
+    root.left.left.left.left = empty
+    root.left.left.left.right = empty
+    root.left.left.right.left = empty
+    root.left.left.right.right = empty
+    root.left.right.left.left = empty
+    root.left.right.left.right = empty
+    root.left.right.right.right = empty
+    root.left.right.right.left = empty
+    root.right.left.left.left = empty
+    root.right.left.left.right = empty
+    root.right.left.right.right = empty
+    root.right.left.right.left = empty
+    root.right.right.right.left = empty
+    root.right.right.right.right = empty
+    root.right.right.left.right = empty
+    root.right.right.left.left = empty
+
+    tree = AVLTree()
+    tree.root = root
+    return tree
+
+def rotate_test():
+    tree = create_avl_tree_height_3()
+    print_tree_centered(tree)
+    tree.rotate(tree.root, tree.root.left, 'r')
+    print_tree_centered(tree)
+
+
 if __name__ == '__main__':
     currTree = create_test_tree()
 
@@ -135,3 +215,5 @@ if __name__ == '__main__':
 
     search_test(currTree)
     finger_search_test(currTree)
+
+    rotate_test()

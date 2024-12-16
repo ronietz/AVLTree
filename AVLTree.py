@@ -79,11 +79,11 @@ class AVLTree(object):
 			self.set_root(child_node)
 		else:
 			child_node.parent = parent_node.parent
+			if parent_node.parent.left == parent_node:
+				parent_node.parent.left = child_node
+			else:
+				parent_node.parent.right = child_node
 
-		if parent_node.parent.left == parent_node:
-			parent_node.parent.left = child_node
-		else:
-			parent_node.parent.right = child_node
 		parent_node.parent = child_node
 		return self
 
