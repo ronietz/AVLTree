@@ -87,6 +87,38 @@ class AVLTree(object):
 		parent_node.parent = child_node
 		return self
 
+	"""searches for a node in the dictionary corresponding to the key (starting at the node we are getting and going down)
+
+	@type key: int
+	@param starting_node: a node which we start the search from in direction up->down
+	@param ending_key: a key to be searched
+	@rtype: (AVLNode,int)
+	@returns: a tuple (x,e) where x is the node corresponding to key (or None if not found),
+	and e is the number of edges on the path between the starting node and ending node+1.
+	"""
+
+	def search_from_key_to_key(self, starting_node, ending_key):
+		number_of_edges = 0
+		node_to_return = None
+
+		root = starting_node
+		# runs over the tree keys
+		while root != None:
+			# add one to the edges counter
+			number_of_edges += 1
+			# if the key was found end the loop
+			if root.key == ending_key:
+				node_to_return = root
+				break
+			# if the given key is bigger that the key we are in - go to the right child
+			elif root.key < ending_key:
+				root = root.right
+			# if the given key is smaller that the key we are in - go to the left child
+			else:
+				root = root.left
+
+		return node_to_return, number_of_edges
+
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the root)
         
@@ -97,8 +129,27 @@ class AVLTree(object):
 	and e is the number of edges on the path between the starting node and ending node+1.
 	"""
 	def search(self, key):
-		return None, -1
 
+		tup = self.search_from_key_to_key(self.root, key)
+
+		return tup[0], tup[1]
+
+
+	"""searches for a the node with the maximum key (starting at the root)
+
+		@returns: the maximum node.
+		"""
+	def get_max(self):
+		maximum_node = None
+		root = self.root
+		# runs over the tree keys
+		while root != None:
+			if root.right == None:
+				maximum_node = root
+				break
+			root = root.right
+
+		return maximum_node
 
 	"""searches for a node in the dictionary corresponding to the key, starting at the max
         
@@ -109,7 +160,28 @@ class AVLTree(object):
 	and e is the number of edges on the path between the starting node and ending node+1.
 	"""
 	def finger_search(self, key):
-		return None, -1
+		number_of_edges = 0
+		node_to_return = None
+		node = self.get_max()
+
+		# if given key s larger than the maximum key - return None
+		if node.key < key:
+			return node_to_return, number_of_edges
+		# runs over the tree keys and find the first node that smaller than the given key
+		while node.parent != None:
+			# if the given key is bigger or equal to the key we are in - go to the node parent
+			if node.key <= key:
+				break
+			node = node.parent
+			# add one to the edges counter
+			number_of_edges += 1
+
+		if node.key == key:
+			tup = node, 1
+		else:
+			tup = self.search_from_key_to_key(node, key)
+
+		return tup[0], number_of_edges + tup[1]
 
 
 	"""inserts a new node into the dictionary with corresponding key and value (starting at the root)

@@ -55,24 +55,32 @@ def print_tree_centered(tree):
 
 def create_test_tree():
     # Create nodes
-    root = AVLNode(5, "")
+    root = AVLNode(8, "")
 
-    treeNode1 = AVLNode(7, "")
+    treeNode1 = AVLNode(11, "")
     treeNode0 = AVLNode(3, "")
     root.right = treeNode1
     root.left = treeNode0
+    treeNode1.parent = root
+    treeNode0.parent = root
 
     treeNode3 = AVLNode(4, "")
     treeNode2 = AVLNode(2, "")
     treeNode0.right = treeNode3
     treeNode0.left = treeNode2
+    treeNode3.parent = treeNode0
+    treeNode2.parent = treeNode0
 
-    treeNode4 = AVLNode(8, "")
-    treeNode5 = AVLNode(6, "")
+    treeNode4 = AVLNode(15, "")
+    treeNode5 = AVLNode(9, "")
     treeNode1.right = treeNode4
     treeNode1.left = treeNode5
+    treeNode4.parent = treeNode1
+    treeNode5.parent = treeNode1
 
-    treeNode4.right = AVLNode(9, "")
+    treeNode6 = AVLNode(17, "")
+    treeNode4.right = treeNode6
+    treeNode6.parent = treeNode4
 
     # Create tree and set root
     currTree = AVLTree()
@@ -80,8 +88,50 @@ def create_test_tree():
     return currTree
 
 
+def search_test(tree):
+    tup = currTree.search(3)
+    if tup[1] != 2:
+        print("search_test - Error in existing node")
+
+    tup = currTree.search(20)
+    if tup[0] != None:
+        print("search_test - Error in non-existing larger node")
+
+
+    tup = currTree.search(10)
+    if tup[0] != None:
+        print("search_test - Error in non-existing in between node")
+    noy = 5
+
+def finger_search_test(tree):
+    tup = currTree.finger_search(3)
+    if tup[1] != 5:
+        print("finger_search_test - Error in existing node")
+
+    tup = currTree.finger_search(20)
+    if tup[0] != None:
+        print("finger_search_test - Error in non-existing larger node")
+
+
+    tup = currTree.finger_search(10)
+    if tup[0] != None:
+        print("finger_search_test - Error in non-existing in between node")
+
+    tup = currTree.finger_search(16)
+    if tup[0] != None:
+        print("finger_search_test - Error in non-existing in between node")
+
+
+    tup = currTree.finger_search(8)
+    if tup[0] != 4:
+        print("finger_search_test - Error in finding root node")
+    noy = 5
+
 if __name__ == '__main__':
     currTree = create_test_tree()
 
     # Print tree
     print_tree_centered(currTree)
+
+    search_test(currTree)
+    finger_search_test(currTree)
