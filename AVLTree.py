@@ -106,8 +106,8 @@ class AVLTree(object):
 	@param starting_node: a node which we start the search from in direction up->down
 	@param ending_key: a key to be searched
 	@rtype: (AVLNode,int)
-	@returns: a tuple (x,e) where x is the node corresponding to key (or None if not found),
-	and e is the number of edges on the path between the starting node and ending node+1.
+	@returns: a tuple (x,e.p) where x is the node corresponding to key (or None if not found),
+	and e is the number of edges on the path between the starting node and ending node+1, and p is the parent node
 	"""
 
 	def search_from_key_to_key(self, starting_node, ending_key):
@@ -116,7 +116,7 @@ class AVLTree(object):
 
 		root = starting_node
 		# runs over the tree keys
-		while root != None:
+		while root != None and root.key != None:
 			# add one to the edges counter
 			number_of_edges += 1
 			# if the key was found end the loop
@@ -125,12 +125,14 @@ class AVLTree(object):
 				break
 			# if the given key is bigger that the key we are in - go to the right child
 			elif root.key < ending_key:
+				parent_node = root
 				root = root.right
 			# if the given key is smaller that the key we are in - go to the left child
 			else:
+				parent_node = root
 				root = root.left
 
-		return node_to_return, number_of_edges
+		return node_to_return, number_of_edges, parent_node
 
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the root)
@@ -156,8 +158,8 @@ class AVLTree(object):
 		maximum_node = None
 		root = self.root
 		# runs over the tree keys
-		while root != None:
-			if root.right == None:
+		while root.key != None:
+			if root.right.key == None:
 				maximum_node = root
 				break
 			root = root.right
@@ -177,11 +179,11 @@ class AVLTree(object):
 		node_to_return = None
 		node = self.get_max()
 
-		# if given key s larger than the maximum key - return None
-		if node.key < key:
+		# if given key is larger than the maximum key - return None
+		if node.key != None and node.key < key:
 			return node_to_return, number_of_edges
 		# runs over the tree keys and find the first node that smaller than the given key
-		while node.parent != None:
+		while node.parent != None and node.parent.key != None:
 			# if the given key is bigger or equal to the key we are in - go to the node parent
 			if node.key <= key:
 				break

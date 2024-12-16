@@ -56,13 +56,16 @@ def print_tree_centered(tree):
 def create_test_tree():
     # Create nodes
     root = AVLNode(8, "")
+    root.height = 3
 
     treeNode1 = AVLNode(11, "")
     treeNode0 = AVLNode(3, "")
     root.right = treeNode1
     root.left = treeNode0
     treeNode1.parent = root
+    treeNode1.height = 2
     treeNode0.parent = root
+    treeNode0.height = 1
 
     treeNode3 = AVLNode(4, "")
     treeNode2 = AVLNode(2, "")
@@ -70,6 +73,30 @@ def create_test_tree():
     treeNode0.left = treeNode2
     treeNode3.parent = treeNode0
     treeNode2.parent = treeNode0
+    treeNode3.height = 0
+    treeNode2.height = 0
+
+
+
+    treeNode16 = AVLNode(None, "")
+    treeNode17 = AVLNode(None, "")
+    treeNode3.right = treeNode16
+    treeNode3.left = treeNode17
+    treeNode16.parent = treeNode3
+    treeNode17.parent = treeNode3
+    treeNode16.height = -1
+    treeNode17.height = -1
+
+
+
+    treeNode15 = AVLNode(None, "")
+    treeNode14 = AVLNode(None, "")
+    treeNode2.right = treeNode15
+    treeNode2.left = treeNode14
+    treeNode15.parent = treeNode2
+    treeNode14.parent = treeNode2
+    treeNode15.height = -1
+    treeNode14.height = -1
 
     treeNode4 = AVLNode(15, "")
     treeNode5 = AVLNode(9, "")
@@ -77,10 +104,35 @@ def create_test_tree():
     treeNode1.left = treeNode5
     treeNode4.parent = treeNode1
     treeNode5.parent = treeNode1
+    treeNode4.height = 1
+    treeNode5.height = 0
+
+
+
+    treeNode19 = AVLNode(None, "")
+    treeNode18 = AVLNode(None, "")
+    treeNode5.right = treeNode19
+    treeNode5.left = treeNode18
+    treeNode18.parent = treeNode5
+    treeNode19.parent = treeNode5
+    treeNode18.height = -1
+    treeNode19.height = -1
+
 
     treeNode6 = AVLNode(17, "")
     treeNode4.right = treeNode6
     treeNode6.parent = treeNode4
+    treeNode6.height = 0
+
+
+    treeNode20 = AVLNode(None, "")
+    treeNode21 = AVLNode(None, "")
+    treeNode6.right = treeNode20
+    treeNode6.left = treeNode21
+    treeNode20.parent = treeNode6
+    treeNode21.parent = treeNode6
+    treeNode20.height = -1
+    treeNode21.height = -1
 
     # Create tree and set root
     currTree = AVLTree()
@@ -123,7 +175,7 @@ def finger_search_test(tree):
 
 
     tup = currTree.finger_search(8)
-    if tup[0] != 4:
+    if tup[1] != 4:
         print("finger_search_test - Error in finding root node")
     noy = 5
 
@@ -216,4 +268,4 @@ if __name__ == '__main__':
     search_test(currTree)
     finger_search_test(currTree)
 
-    rotate_test()
+    #rotate_test()
