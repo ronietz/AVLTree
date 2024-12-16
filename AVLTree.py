@@ -57,7 +57,6 @@ class AVLTree(object):
 	set new root
 	@type root: AVLNode
 	"""
-
 	def set_root(self, root):
 		self.root = root
 
@@ -71,27 +70,33 @@ class AVLTree(object):
 	@returns: self after rotation
 	"""
 	def rotate(self, parent_node, child_node, direction):
-		if direction == "r":
+		if direction == "r": # rotate right
+			# move subtree from child to parent
 			sub_tree = child_node.right
 			parent_node.left = sub_tree
+			# set parent as child's child
 			child_node.right = parent_node
-		else:
+		else: # rotate left
+			# move subtree from child to parent
 			sub_tree = child_node.left
 			parent_node.right = sub_tree
+			# set parent as child's child
 			child_node.left = parent_node
 
 		if sub_tree.is_real_node():
 			sub_tree.parent = parent_node
 
+		# if parent_node is root
 		if parent_node.parent is None:
 			self.set_root(child_node)
+		# if parent_node have parent set child_node as his child
 		else:
 			child_node.parent = parent_node.parent
 			if parent_node.parent.left == parent_node:
 				parent_node.parent.left = child_node
 			else:
 				parent_node.parent.right = child_node
-
+		
 		parent_node.parent = child_node
 		return self
 
@@ -205,6 +210,7 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
+
 		return None, -1, -1
 
 
