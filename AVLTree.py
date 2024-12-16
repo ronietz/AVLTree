@@ -96,7 +96,7 @@ class AVLTree(object):
 				parent_node.parent.left = child_node
 			else:
 				parent_node.parent.right = child_node
-		
+
 		parent_node.parent = child_node
 		return self
 
@@ -210,6 +210,22 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
+		# create new node
+		new_node = AVLNode(key, val)
+		# find where to insert - get father
+		parent = None
+
+		# the parent is not a leaf
+		if parent.left.is_real_node() or parent.right.is_real_node():
+			if parent.key > key:
+				parent.left = new_node
+			else:
+				parent.right = new_node
+		#the parent is a leaf
+		#else:
+
+
+		# set all new_node and parent fields
 
 		return None, -1, -1
 
