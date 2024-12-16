@@ -61,7 +61,15 @@ class AVLTree(object):
 	def set_root(self, root):
 		self.root = root
 
-
+	"""
+	@type parent_node: AVLNode
+	@type child_node: AVLNode 
+	@param parent_node: parent of child node
+	@param child_node: child node of parent node
+	@param direction: 'r' for right rotate, 'l' for left rotate
+	@rtype: AVLTree
+	@returns: self after rotation
+	"""
 	def rotate(self, parent_node, child_node, direction):
 		if direction == "r":
 			sub_tree = child_node.right
