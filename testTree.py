@@ -15,7 +15,7 @@ def print_tree_centered(tree):
         right_lines, right_width, right_root_pos = build_tree_structure(node.right)
 
         # Format the current node
-        node_label = f"{node.key}"
+        node_label = f"{node.key, node.height}"
         label_width = len(node_label)
 
         # Calculate root position and total width
@@ -258,9 +258,28 @@ def rotate_test():
     tree.rotate(tree.root, tree.root.left, 'r')
     print_tree_centered(tree)
 
+def create_empty_tree():
+    tree = AVLTree()
+    tree.root = tree.virtual_leaf
+    return tree
+
+def insert_test():
+    tree = create_empty_tree()
+    print_tree_centered(tree)
+    tree.insert(5, "roni")
+    print_tree_centered(tree)
+    tree.insert(4, "roni")
+    tree.insert(7, "roni")
+    tree.insert(10, "roni")
+    print_tree_centered(tree)
+    tree.insert(12, "roni")
+    print_tree_centered(tree)
+    tree.insert(14, "roni")
+
 
 if __name__ == '__main__':
     currTree = create_test_tree()
+    print_tree_centered(tree)
 
     # Print tree
     print_tree_centered(currTree)
@@ -269,3 +288,5 @@ if __name__ == '__main__':
     finger_search_test(currTree)
 
     #rotate_test()
+
+    #insert_test()

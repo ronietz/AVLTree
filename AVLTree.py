@@ -40,6 +40,21 @@ class AVLNode(object):
 	def set_height(self):
 		self.height = 1 + max(self.left.height, self.right.height)
 
+	"""
+	@return the node's balance factor (right - left)
+	@rtype: int
+	"""
+	def get_balance_factor(self):
+		return self.right.height - self.left.height
+
+	"""
+	check if the height diff with children is 0 or 1 
+	@return True if node is valid AVL node, False otherwise
+	"""
+	def is_valid_AVL_node(self):
+		return self.get_balance_factor() in (0, 1, -1) and self.height == max(self.left.height, self.right.height) + 1
+
+
 
 """
 A class implementing an AVL tree.
@@ -52,6 +67,7 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
+		self.virtual_leaf = AVLNode(None, None)
 
 	"""
 	set new root
@@ -66,8 +82,8 @@ class AVLTree(object):
 	@param parent_node: parent of child node
 	@param child_node: child node of parent node
 	@param direction: 'r' for right rotate, 'l' for left rotate
-	@rtype: AVLTree
-	@returns: self after rotation
+	@rtype: (AVLNode, AVLNode)
+	@returns: new child node (parent_node), new parent node (child_node)
 	"""
 	def rotate(self, parent_node, child_node, direction):
 		if direction == "r": # rotate right
@@ -98,7 +114,11 @@ class AVLTree(object):
 				parent_node.parent.right = child_node
 
 		parent_node.parent = child_node
-		return self
+		# set heights
+		parent_node.set_height()
+		child_node.set_height()
+		# return new child, new parent
+		return parent_node, child_node
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the node we are getting and going down)
 
@@ -113,6 +133,7 @@ class AVLTree(object):
 	def search_from_key_to_key(self, starting_node, ending_key):
 		number_of_edges = 0
 		node_to_return = None
+		parent_node = None
 
 		root = starting_node
 		# runs over the tree keys
@@ -199,6 +220,46 @@ class AVLTree(object):
 		return tup[0], number_of_edges + tup[1]
 
 
+	"""
+	rebalance tree after insertion
+	@type start_node: AVLNode
+	@param start_node: starting node to balance
+	@type promote_count: int
+	@param end_node: counts promotions
+	@rtype: int
+	@returns: promote_count - number of promotions
+	"""
+	def rebalance_tree(self, start_node, promote_count):
+		start_node.set_height()
+
+		if start_node.is_valid_AVL_node():
+			# case 1 - problem is fixed or moved up
+			if start_node.parent is None:
+				return promote_count + 1
+			return self.rebalance_tree(start_node.parent, promote_count + 1)
+
+		balance_factor = start_node.get_balance_factor()
+		if balance_factor == 2:
+			if start_node.right.get_balance_factor() == 1:
+				# case 2 - single rotation left
+				self.rotate(start_node, start_node.right, 'l')
+			else:
+				# case 3 - double rotation right and left
+				new_parent, new_child = self.rotate(start_node.right, start_node.right.left, 'r')
+				self.rotate(new_parent.parent, new_parent, 'r')
+
+		elif balance_factor == -2:
+			if start_node.right.get_balance_factor() == -1:
+				# case 2 - single rotation right
+				self.rotate(start_node, start_node.left, 'r')
+			else:
+				# case 3 - double rotation left and right
+				new_parent, new_child = self.rotate(start_node.left, start_node.left.right, 'l')
+				self.rotate(new_parent.parent, new_parent, 'r')
+
+		return promote_count
+
+
 	"""inserts a new node into the dictionary with corresponding key and value (starting at the root)
 
 	@type key: int
@@ -212,24 +273,37 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
+		promote_count = 0
 		# create new node
 		new_node = AVLNode(key, val)
-		# find where to insert - get father
-		parent = None
-
-		# the parent is not a leaf
-		if parent.left.is_real_node() or parent.right.is_real_node():
+		# set virtual children
+		new_node.left = self.virtual_leaf
+		new_node.right = self.virtual_leaf
+		# find where to insert - get father and e
+		tup = self.search_from_key_to_key(self.root, key)
+		parent = tup[2]
+		e = tup[1]
+		#insert new node
+		#if parent is root
+		if parent is None:
+			self.root = new_node
+			new_node.set_height()
+		else:
+			is_parent_leaf = not parent.left.is_real_node() and not parent.right.is_real_node()
+			new_node.parent = parent
 			if parent.key > key:
 				parent.left = new_node
 			else:
 				parent.right = new_node
-		#the parent is a leaf
-		#else:
+			# the parent is not a leaf
+			if not is_parent_leaf:
+				new_node.set_height()
+				new_node.parent.set_height()
+			#the parent is a leaf
+			else:
+				promote_count = self.rebalance_tree(new_node, promote_count)
+		return new_node, e, promote_count
 
-
-		# set all new_node and parent fields
-
-		return None, -1, -1
 
 
 	"""inserts a new node into the dictionary with corresponding key and value, starting at the max
