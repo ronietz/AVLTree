@@ -326,6 +326,20 @@ def insert_test():
     if tree.insert(2, "")[2] != 1:
         print("promote ERROR")
 
+def finger_insert_test():
+    tree = create_avl_tree_height_3()
+
+    x,e,h = tree.finger_insert(80, "bla")
+    print_tree_centered(tree)
+    if h != 4:
+        print("ERROR promoting")
+    if e != 1:
+        print("ERROR counting edges")
+    print(h, e)
+    x, e, h = tree.finger_insert(59, "bla")
+    print_tree_centered(tree)
+    print(h, e)
+
 
 
 if __name__ == '__main__':
@@ -340,4 +354,6 @@ if __name__ == '__main__':
 
     #rotate_test()
 
-    insert_test()
+    #insert_test()
+
+    finger_insert_test()

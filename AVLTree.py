@@ -190,21 +190,22 @@ class AVLTree(object):
 		return maximum_node
 
 	"""searches for a node in the dictionary corresponding to the key, starting at the max
-        
-	@type key: int
-	@param key: a key to be searched
-	@rtype: (AVLNode,int)
-	@returns: a tuple (x,e) where x is the node corresponding to key (or None if not found),
-	and e is the number of edges on the path between the starting node and ending node+1.
-	"""
-	def finger_search(self, key):
+
+		@type key: int
+		@param key: a key to be searched
+		@rtype: (AVLNode,int, AVLNode)
+		@returns: a tuple (x,e, parent) where x is the node corresponding to key (or None if not found),
+		and e is the number of edges on the path between the starting node and ending node+1
+		parent is the parent of the node (or who would be the parent if the key is not in the tree).
+		"""
+	def _finger_search_with_parent(self, key):
 		number_of_edges = 0
 		node_to_return = None
 		node = self.get_max()
 
 		# if given key is larger than the maximum key - return None
 		if node.key != None and node.key < key:
-			return node_to_return, number_of_edges
+			return node_to_return, number_of_edges, node
 		# runs over the tree keys and find the first node that smaller than the given key
 		while node.parent != None and node.parent.key != None:
 			# if the given key is bigger or equal to the key we are in - go to the node parent
@@ -215,11 +216,23 @@ class AVLTree(object):
 			number_of_edges += 1
 
 		if node.key == key:
-			tup = node, 1
+			tup = node, 1, node.parent
 		else:
 			tup = self.search_from_key_to_key(node, key)
 
-		return tup[0], number_of_edges + tup[1]
+		return tup[0], number_of_edges + tup[1], tup[2]
+
+	"""searches for a node in the dictionary corresponding to the key, starting at the max
+        
+	@type key: int
+	@param key: a key to be searched
+	@rtype: (AVLNode,int)
+	@returns: a tuple (x,e) where x is the node corresponding to key (or None if not found),
+	and e is the number of edges on the path between the starting node and ending node+1.
+	"""
+	def finger_search(self, key):
+		tup = self._finger_search_with_parent(key)
+		return tup[0], tup[1]
 
 
 	"""
@@ -358,7 +371,7 @@ class AVLTree(object):
 		new_node = self._build_new_node(key, val)
 
 		# find where to insert - get father and e
-		tup = self._finger_search(self.root, key)
+		tup = self._finger_search_with_parent(key)
 		parent = tup[2]
 		e = tup[1]
 
