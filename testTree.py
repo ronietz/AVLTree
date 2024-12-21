@@ -276,10 +276,55 @@ def insert_test():
     print_tree_centered(tree)
     tree.insert(14, "roni")
 
+    tree = create_avl_tree_height_3()
+    tree.insert(42 , "roni")
+    # insert to parent not a leaf
+    tree.insert(46, "roni")
+    if tree.root.height != 4:
+        print("Enter child not to a leaf - problem fixing heights")
+
+    # insert to a parent who is a leaf
+    # case 1 - promote
+    tree.insert(47, "roni")
+    if tree.root.right.left.height != 2:
+        print("Enter child to leaf - problem fixing heights")
+
+    # case 2 - right
+    tree.insert(19, "roni")
+    print_tree_centered(tree)
+    tree.insert(17, "roni")
+    if tree.root.left.right.left.key != 19:
+        print("Enter child to leaf - single rotate right ERROR")
+
+    # case 3 - left -> right
+    tree.insert(22, "roni")
+    node = tree.search(20)
+    if node[0].right.key != 24:
+        print("Enter child to leaf - double rotate right ERROR")
+
+    # case 2 - left
+    tree.insert(61, "roni")
+    tree.insert(62, "")
+    node = tree.search(56)
+    if node[0].right.key != 61:
+        print("Enter child to leaf - single rotate left ERROR")
+    print_tree_centered(tree)
+    # case 3 - right -> left
+    tree = create_empty_tree()
+    tree.insert(1, "")
+    tree.insert(3, "")
+    print_tree_centered(tree)
+    tree.insert(2, "")
+    if tree.root.key != 2:
+        print("Enter child to leaf - double rotate right-> left ERROR")
+    print_tree_centered(tree)
+
+
+
 
 if __name__ == '__main__':
     currTree = create_test_tree()
-    print_tree_centered(tree)
+    print_tree_centered(currTree)
 
     # Print tree
     print_tree_centered(currTree)
@@ -289,4 +334,4 @@ if __name__ == '__main__':
 
     #rotate_test()
 
-    #insert_test()
+    insert_test()

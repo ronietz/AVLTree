@@ -45,6 +45,8 @@ class AVLNode(object):
 	@rtype: int
 	"""
 	def get_balance_factor(self):
+		if not self.is_real_node():
+			return 0
 		return self.right.height - self.left.height
 
 	"""
@@ -240,21 +242,21 @@ class AVLTree(object):
 
 		balance_factor = start_node.get_balance_factor()
 		if balance_factor == 2:
-			if start_node.right.get_balance_factor() == 1:
+			if start_node.right.get_balance_factor() in {0, 1}:
 				# case 2 - single rotation left
 				self.rotate(start_node, start_node.right, 'l')
 			else:
 				# case 3 - double rotation right and left
-				new_parent, new_child = self.rotate(start_node.right, start_node.right.left, 'r')
-				self.rotate(new_parent.parent, new_parent, 'r')
+				new_child, new_parent = self.rotate(start_node.right, start_node.right.left, 'r')
+				self.rotate(new_parent.parent, new_parent, 'l')
 
 		elif balance_factor == -2:
-			if start_node.right.get_balance_factor() == -1:
+			if start_node.left.get_balance_factor() in {0, -1}:
 				# case 2 - single rotation right
 				self.rotate(start_node, start_node.left, 'r')
 			else:
 				# case 3 - double rotation left and right
-				new_parent, new_child = self.rotate(start_node.left, start_node.left.right, 'l')
+				new_child, new_parent = self.rotate(start_node.left, start_node.left.right, 'l')
 				self.rotate(new_parent.parent, new_parent, 'r')
 
 		return promote_count
