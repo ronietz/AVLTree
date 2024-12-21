@@ -261,6 +261,58 @@ class AVLTree(object):
 
 		return promote_count
 
+	"""
+	get a key and a value to insert to the dictionary and create a new valid leaf with virtual leafs
+	
+	@type key: int
+	@pre: key currently does not appear in the dictionary
+	@param key: key of item that is to be inserted to self
+	@type val: string
+	@param val: the value of the item
+	@rtype: AVLNode
+	@returns: the new node
+	
+	"""
+	def _build_new_node(self, key, val):
+		new_node = AVLNode(key, val)
+		# set virtual children
+		new_node.left = self.virtual_leaf
+		new_node.right = self.virtual_leaf
+		return new_node
+
+	"""inserts a new node into the dictionary as parent's child
+
+		@type new_node: AVLNode
+		@pre: new_node.key currently does not appear in the dictionary, new_node is a valid leaf, if new_node was in the dictionary it was parent's child
+		@param new_node: new node that is to be inserted to self
+		@type parent: AVLNode
+		@param val: the parent of new_node
+		@rtype: (AVLNode,int)
+		@returns: a 2-tuple (x,h) where x is the new node,
+		and h is the number of PROMOTE cases during the AVL rebalancing
+		"""
+	def _insert_node_to_parent(self, new_node, parent):
+		promote_count = 0
+		# if parent is root
+		if parent is None:
+			self.root = new_node
+			new_node.set_height()
+		else:
+			is_parent_leaf = not parent.left.is_real_node() and not parent.right.is_real_node()
+			new_node.parent = parent
+			if parent.key > new_node.key:
+				parent.left = new_node
+			else:
+				parent.right = new_node
+			# the parent is not a leaf
+			if not is_parent_leaf:
+				new_node.set_height()
+				new_node.parent.set_height()
+			# the parent is a leaf
+			else:
+				promote_count = self.rebalance_tree(new_node, -1)
+		return new_node, promote_count
+
 
 	"""inserts a new node into the dictionary with corresponding key and value (starting at the root)
 
@@ -275,35 +327,16 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
-		promote_count = 0
 		# create new node
-		new_node = AVLNode(key, val)
-		# set virtual children
-		new_node.left = self.virtual_leaf
-		new_node.right = self.virtual_leaf
+		new_node = self._build_new_node(key, val)
+
 		# find where to insert - get father and e
 		tup = self.search_from_key_to_key(self.root, key)
 		parent = tup[2]
 		e = tup[1]
-		#insert new node
-		#if parent is root
-		if parent is None:
-			self.root = new_node
-			new_node.set_height()
-		else:
-			is_parent_leaf = not parent.left.is_real_node() and not parent.right.is_real_node()
-			new_node.parent = parent
-			if parent.key > key:
-				parent.left = new_node
-			else:
-				parent.right = new_node
-			# the parent is not a leaf
-			if not is_parent_leaf:
-				new_node.set_height()
-				new_node.parent.set_height()
-			#the parent is a leaf
-			else:
-				promote_count = self.rebalance_tree(new_node, -1)
+
+		#insert new node to place
+		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
 		return new_node, e, promote_count
 
 
@@ -321,7 +354,17 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def finger_insert(self, key, val):
-		return None, -1, -1
+		# create new node
+		new_node = self._build_new_node(key, val)
+
+		# find where to insert - get father and e
+		tup = self._finger_search(self.root, key)
+		parent = tup[2]
+		e = tup[1]
+
+		# insert new node to place
+		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
+		return new_node, e, promote_count
 
 
 	"""deletes node from the dictionary
