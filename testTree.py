@@ -318,7 +318,13 @@ def insert_test():
     if tree.root.key != 2:
         print("Enter child to leaf - double rotate right-> left ERROR")
     print_tree_centered(tree)
-
+    tree = create_empty_tree()
+    if tree.insert(3, "")[2] != 0:
+        print("promote ERROR")
+    if tree.insert(1, "")[2] != 1:
+        print("promote ERROR")
+    if tree.insert(2, "")[2] != 1:
+        print("promote ERROR")
 
 
 

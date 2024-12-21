@@ -303,7 +303,7 @@ class AVLTree(object):
 				new_node.parent.set_height()
 			#the parent is a leaf
 			else:
-				promote_count = self.rebalance_tree(new_node, promote_count)
+				promote_count = self.rebalance_tree(new_node, -1)
 		return new_node, e, promote_count
 
 
