@@ -5,12 +5,10 @@
 #name2:
 #username2:
 
-
 """A class represnting a node in an AVL tree"""
 
 class AVLNode(object):
 	"""Constructor, you are allowed to add more fields. 
-	
 	@type key: int
 	@param key: key of your node
 	@type value: string
@@ -70,6 +68,7 @@ class AVLTree(object):
 	def __init__(self):
 		self.root = None
 		self.virtual_leaf = AVLNode(None, None)
+		self.virtual_leaf.height = -1
 
 	"""
 	set new root
@@ -385,29 +384,27 @@ class AVLTree(object):
 		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
 		return new_node, e, promote_count
 
+	"""deletes node from the parent
 
-	"""deletes node from the dictionary
-
-	@type node: AVLNode
-	@pre: node is a real pointer to a node in self
-	"""
-	def delete(self, node):
-		return
+		@type node: AVLNode
+		@pre: node is a real pointer to a node in self
+		"""
 
 	"""
-	connect root of shorter tree and node of taller tree as children of connector_node
-	and connect connector_node to the taller tree.
-	@type node: AVLNode
-	@param node: the node that is to be connected
-	@type root: AVLNode
-	@param root: the root of the shorter tree
-	@type connector_node: AVLNode
-	@param connector_node: an AVLNode that should become parent of node and root and child of node.parent
-	@type direction: String
-	@param direction: the direction of the shorter tree 
-	@pre: direction == 'l' if root is smaller in keys, and 'r' if root is larger in keys.
-	The height difference between the node and the root is at most 1.
-	"""
+    connect root of shorter tree and node of taller tree as children of connector_node
+    and connect connector_node to the taller tree.
+    @type node: AVLNode
+    @param node: the node that is to be connected
+    @type root: AVLNode
+    @param root: the root of the shorter tree
+    @type connector_node: AVLNode
+    @param connector_node: an AVLNode that should become parent of node and root and child of node.parent
+    @type direction: String
+    @param direction: the direction of the shorter tree 
+    @pre: direction == 'l' if root is smaller in keys, and 'r' if root is larger in keys.
+    The height difference between the node and the root is at most 1.
+    """
+
 	def connect_trees(self, node, root, connector_node, direction_of_root):
 		if direction_of_root == 'l':
 			# connect root to the left
@@ -426,13 +423,14 @@ class AVLTree(object):
 
 	"""joins self with item and another AVLTree
 
-		@type tree2: AVLTree 
-		@param tree2: a dictionary to be joined with self
-		@type connector_node: AVLNode
-		@param connector_node: an AVLNode that should become the new root. 
-		@pre: all keys in self are smaller than key and all keys in tree2 are larger than key,
-		or the opposite way. connector_node.key is between the trees values. self and tree2 has the same height. 
-		"""
+        @type tree2: AVLTree 
+        @param tree2: a dictionary to be joined with self
+        @type connector_node: AVLNode
+        @param connector_node: an AVLNode that should become the new root. 
+        @pre: all keys in self are smaller than key and all keys in tree2 are larger than key,
+        or the opposite way. connector_node.key is between the trees values. self and tree2 has the same height. 
+        """
+
 	def join_same_height(self, tree2, connector_node):
 		if connector_node.key > tree2.root.key:
 			connector_node.left = tree2.root
@@ -446,9 +444,10 @@ class AVLTree(object):
 		self.root.set_height()
 
 	"""
-	walks on the tree in the given direction until finding node that it's height equals height or 1 shorter
-	@return the node that was found
-	"""
+    walks on the tree in the given direction until finding node that it's height equals height or 1 shorter
+    @return the node that was found
+    """
+
 	def find_node_at_height(self, height, direction):
 		node = self.root
 		if direction == 'l':
@@ -458,6 +457,201 @@ class AVLTree(object):
 		while node.height > height and node.right.is_real_node():
 			node = node.right
 		return node
+
+	def delete_node(self, node):
+		parent = node.parent
+		if parent.key > node.key:
+			# if a leaf only delete, else pass it child
+			if node.height == 0:
+				parent.left = self.virtual_leaf
+			else:
+				if node.right.key != None:
+					parent.left = node.right
+					node.right.parent = parent
+				else:
+					parent.left = node.left
+					node.left.parent = parent
+		else:
+			# if a leaf only delete, else pass it child
+			if node.height == 0:
+				parent.right = self.virtual_leaf
+			else:
+				if node.right.key != None:
+					parent.right = node.right
+					node.right.parent = parent
+				else:
+					parent.right = node.left
+					node.left.parent = parent
+
+	"""demote nodes height and it parent up to the root
+
+		@type node: AVLNode
+		@pre: node is a real pointer to a node in self
+		"""
+	def demote_node(self, node):
+		parent_loop = node
+		while parent_loop != None:
+			right_diff = parent_loop.height - parent_loop.right.height
+			left_diff = parent_loop.height - parent_loop.left.height
+			if right_diff == 2 and left_diff == 2:
+				parent_loop.height = parent_loop.height - 1
+			else:
+				break
+
+			parent_loop = parent_loop.parent
+
+	"""balancing the tree after deleting node
+
+			@type node: AVLNode
+			@type brother: AVLNode - the other child of the parent of the deleted node
+			@pre: node and brother is a real pointer to a node in self
+			"""
+	def balance_the_tree(self, node, brother):
+		# add the symmetrical case
+		dire = "l"
+		node_to_rotate = brother
+		if brother.key < node.parent.key:
+			dire = "r"
+
+		parent = node.parent
+		# if the two children of the node brother node is even
+		if brother.left.height == brother.right.height:
+			self.rotate(parent, node_to_rotate, dire)
+		# brother's right child is higher, and brother is lower than node (or the opposite)
+		elif (brother.left.height < brother.right.height and dire == "r") or (
+				brother.right.height < brother.left.height and dire == "l"):
+			# first rotation according to height
+			if brother.left.height > brother.right.height:
+				new_node_to_rotate = brother.left
+				self.rotate(brother, new_node_to_rotate, "r")
+				# second rotate
+				self.use_print_function()
+				self.rotate(parent, new_node_to_rotate, dire)
+			else:
+				new_node_to_rotate = brother.right
+				self.rotate(brother, new_node_to_rotate, "l")
+				# second rotate
+				self.use_print_function()
+				self.rotate(parent, new_node_to_rotate, dire)
+
+			# fix tree heights - go up and decrease the parents height if needed
+			parent.height = parent.height - 1
+			self.demote_node(parent.parent)
+		# if the left child of the node brother node is higher, and the node brother is higher than the deleted node or the opposite
+		elif (brother.left.height < brother.right.height and dire == "l") or (
+				brother.right.height < brother.left.height and dire == "r"):
+			self.rotate(parent, node_to_rotate, dire)
+			# fix tree heights - go up and decrease the parents height if needed
+			parent.height = parent.height - 1
+			self.demote_node(parent.parent)
+
+
+	def get_successor(self, node):
+		# if the node hase right child return the min of its tree
+		if node.right.key != None:
+			node = node.right
+			while node.left.key != None:
+				node = node.left
+			return node
+		# go up in the tree until the node is the right child
+		parent = node.parent
+		while parent.key != None and node == parent.right:
+			node = parent
+			parent = parent.parent
+		return parent
+
+	def get_predecessor(self, node):
+		# if the node hase right child return the min of its tree
+		if node.left.key != None:
+			node = node.left
+			while node.right.key != None:
+				node = node.right
+			return node
+		# go up in the tree until the node is the right child
+		parent = node.parent
+		while parent.key != None and node == parent.left:
+			node = parent
+			parent = parent.parent
+		return parent
+
+
+	###DELETE BEFORE COMMITE
+	def use_print_function(self):
+		from testTree import print_tree_centered  # Import inside the function
+		print_tree_centered(self)
+
+	"""deletes node from the dictionary
+
+	@type node: AVLNode
+	@pre: node is a real pointer to a node in self
+	"""
+	def delete(self, node):
+		use_decessor = False
+		node_to_replace = None
+		node_to_delete = node
+		if node.left.key != None and node.right.key != None:
+			use_decessor = True
+			node_to_delete = node
+			# replace the node with its successor or predecessor to make sure we are deleting node with one child
+			max_node = self.get_max()
+			if max_node.key == node.key:
+				node = self.get_predecessor(node)
+			else:
+				node = self.get_successor(node)
+			node_to_replace = node
+
+		#### what will we do in a case this is tha maximal node when there is no successor????
+
+		# check which side is the node
+		parent = node.parent
+		brother = node.parent.left
+		node_dir = "r"
+		if node.key < node.parent.key:
+			brother = node.parent.right
+			node_dir = "l"
+
+		# if the other child of my parent is lower than the given node - demote and rotate
+		if brother.key == None or brother.height == node.height - 1:
+			self.delete_node(node)
+			# fix tree heights - go up and decrease the parents height if needed
+			parent.height = parent.height - 1
+			self.demote_node(parent.parent)
+
+		# if the other child of my parent is with the same height as the given node - only delete
+		elif brother.height == node.height:
+			self.delete_node(node)
+
+		# if the other child of my parent is higher than the given node - delete and rotate
+		elif brother.height == node.height + 1:
+			# balance the tree
+			self.balance_the_tree(node, brother)
+
+			self.delete_node(node)
+
+
+		# replace the node with its succussore if needed
+		if use_decessor:
+			node_to_replace.left = node_to_delete.left
+			if node_to_delete.left.key != None:
+				node_to_delete.left.parent = node_to_replace
+
+			node_to_replace.right = node_to_delete.right
+			if node_to_delete.right.key != None:
+				node_to_delete.right.parent = node_to_replace
+
+			node_to_replace.height = node_to_delete.height
+			node_to_replace.value = node_to_delete.value
+			node_to_replace.parent = node_to_delete.parent
+			if node_to_delete.parent != None and node_to_delete.parent.key != None:
+				if node_to_delete.parent.key < node_to_replace.key:
+					node_to_delete.parent.right = node_to_replace
+				else:
+					node_to_delete.parent.left = node_to_replace
+
+			if node_to_delete == self.root:
+				self.root = node_to_replace
+
+		return
 
 	"""joins self with item and another AVLTree
 

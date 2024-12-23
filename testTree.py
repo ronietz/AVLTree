@@ -29,7 +29,7 @@ def print_tree_centered(tree):
             right_connector = '\\' if node.right and node.right.is_real_node() else ' '
             second_line = (
                 f"{' ' * (left_root_pos)}{left_connector}"
-                f"{' ' * (root_pos - left_root_pos - 1)}"
+                f"{' ' * (root_pos - left_root_pos-3 - 1)}"
                 f"{' ' * (label_width)}"
                 f"{right_connector}{' ' * (total_width - root_pos - 1)}"
             )
@@ -55,7 +55,7 @@ def print_tree_centered(tree):
 
 def create_test_tree():
     # Create nodes
-    root = AVLNode(8, "")
+    root = AVLNode(6, "")
     root.height = 3
 
     treeNode1 = AVLNode(11, "")
@@ -104,14 +104,14 @@ def create_test_tree():
     treeNode1.left = treeNode5
     treeNode4.parent = treeNode1
     treeNode5.parent = treeNode1
-    treeNode4.height = 1
-    treeNode5.height = 0
+    treeNode4.height = 0
+    treeNode5.height = 1
 
 
 
     treeNode19 = AVLNode(None, "")
     treeNode18 = AVLNode(None, "")
-    treeNode5.right = treeNode19
+    treeNode4.right = treeNode19
     treeNode5.left = treeNode18
     treeNode18.parent = treeNode5
     treeNode19.parent = treeNode5
@@ -119,8 +119,8 @@ def create_test_tree():
     treeNode19.height = -1
 
 
-    treeNode6 = AVLNode(17, "")
-    treeNode4.right = treeNode6
+    treeNode6 = AVLNode(10, "")
+    treeNode5.right = treeNode6
     treeNode6.parent = treeNode4
     treeNode6.height = 0
 
@@ -133,6 +133,12 @@ def create_test_tree():
     treeNode21.parent = treeNode6
     treeNode20.height = -1
     treeNode21.height = -1
+
+
+    treeNode22 = AVLNode(None, "")
+    treeNode4.left = treeNode21
+    treeNode22.parent = treeNode4
+    treeNode22.height = -1
 
     # Create tree and set root
     currTree = AVLTree()
@@ -425,11 +431,51 @@ def join_test():
         print("ERROR joining same heights bigger tree")
 
 
+def delete_test(currTree):
+    #case4 - 2 rotates
+    print("------------- case4 - 2 rotates --------------")
+    node = currTree.get_max()
+    currTree.delete(node)
+    print_tree_centered(currTree)
 
+    # case3 - demote + rotate
+    print("------------- case3 - demote + rotate --------------")
+    currTree.insert(15, "roni")
+    print_tree_centered(currTree)
+    node = currTree.root.right.left
+    currTree.delete(node)
+    print_tree_centered(currTree)
+
+    # case1 - decrease
+    print("------------- case2 - demote --------------")
+    currTree.insert(20, "roni")
+    print_tree_centered(currTree)
+    node = currTree.root.right.right
+    currTree.delete(node)
+    print_tree_centered(currTree)
+
+    #case3 - 2 rotates
+    print("------------- case3 - one rotates r l --------------")
+    currTree.insert(8, "roni")
+    print_tree_centered(currTree)
+    node = currTree.root.right.right
+    currTree.delete(node)
+    print_tree_centered(currTree)
+
+    #case 5 - deleting node from the middle
+    print("------------- case5 - middle node --------------")
+    print_tree_centered(currTree)
+    currTree.delete(currTree.root)
+    print_tree_centered(currTree)
+
+    # case 6 - deleting max node from the middle
+    print("------------- case6 - another middle node --------------")
+    print_tree_centered(currTree)
+    node = currTree.root.left
+    currTree.delete(node)
 
 if __name__ == '__main__':
-    #currTree = create_test_tree()
-    #print_tree_centered(currTree)
+    currTree = create_test_tree()
 
     # Print tree
     #print_tree_centered(currTree)
@@ -437,9 +483,16 @@ if __name__ == '__main__':
     #search_test(currTree)
     #finger_search_test(currTree)
 
+
+
+    # search_test(currTree)
+    # finger_search_test(currTree)
+
     #rotate_test()
 
     #insert_test()
 
     # finger_insert_test()
-    join_test()
+    #join_test()
+    delete_test(currTree)
+    print_tree_centered(currTree)
