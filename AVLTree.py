@@ -548,4 +548,6 @@ class AVLTree(object):
 	@returns: the root, None if the dictionary is empty
 	"""
 	def get_root(self):
+		if self.root.is_real_node():
+			return self.root
 		return None
