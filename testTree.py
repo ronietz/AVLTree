@@ -340,20 +340,106 @@ def finger_insert_test():
     print_tree_centered(tree)
     print(h, e)
 
+def join_test():
+    tree = create_empty_tree()
+    tree.insert(10, "bla")
+    tree.insert(15, "bla")
+    tree.insert(3, "bla")
+    tree.insert(7, "bla")
+    tree.insert(5, "bla")
+
+    tree2 = create_empty_tree()
+    tree2.insert(1, "bla")
+    # join shorter and smaller tree
+    tree.join(tree2, 2, "blabla")
+    if (tree.root.key != 5):
+        print("ERROR joining shorter and smaller tree")
+
+    # join shorter and bigger tree
+    tree2 = create_empty_tree()
+    tree2.insert(29, "bla")
+    tree2.insert(33, "bla")
+    tree2.insert(21, "bla")
+    tree.join(tree2, 17, "blabla")
+    if tree.search(17)[0].right.key != 29:
+        print("ERROR joining shorter and bigger tree")
+
+    # join taller and smaller tree
+    tree = create_empty_tree()
+    tree.insert(17, "bla")
+    tree.insert(20, "bla")
+    tree.insert(15, "bla")
+    tree2 = create_empty_tree()
+    tree2.insert(3, "bla")
+    tree2.insert(5, "bla")
+    tree2.insert(7, "bla")
+    tree2.insert(4, "bla")
+    tree2.insert(6, "bla")
+    tree2.insert(8, "bla")
+    tree2.insert(11, "bla")
+    tree.join(tree2, 14, "bla")
+    if tree.root.right.key != 14:
+        print("ERROR joining taller and smaller tree")
+
+    # join taller and bigger tree
+    tree = create_empty_tree()
+    tree.insert(17, "bla")
+
+    tree2 = create_empty_tree()
+    tree2.insert(30, "bla")
+    tree2.insert(33, "bla")
+    tree2.insert(25, "bla")
+    tree2.insert(40, "bla")
+    tree2.insert(56, "bla")
+    tree2.insert(31, "bla")
+    tree2.insert(27, "bla")
+    tree2.insert(38, "bla")
+    tree2.insert(45, "bla")
+    tree2.insert(49, "bla")
+    tree2.insert(58, "bla")
+    tree2.insert(99, "bla")
+    tree.join(tree2, 22, "bla")
+    if tree.root.height != 3:
+        print("ERROR joining taller and bigger tree")
+
+    # join same height smaller tree
+    tree = create_empty_tree()
+    tree.insert(17, "bla")
+    tree.insert(20, "bla")
+    tree.insert(15, "bla")
+    tree2 = create_empty_tree()
+    tree2.insert(2, "bla")
+    tree2.insert(3, "bla")
+    tree2.insert(5, "bla")
+    tree.join(tree2, 10, "bla")
+    if tree.root.key != 10:
+        print("ERROR joining same heights smaller tree")
+
+    # join same height bigger tree
+    tree = create_empty_tree()
+    tree.insert(17, "bla")
+    tree2 = create_empty_tree()
+    tree2.insert(30, "bla")
+    tree.join(tree2, 18, "")
+    if tree.root.key != 18:
+        print("ERROR joining same heights bigger tree")
+
+
 
 
 if __name__ == '__main__':
-    currTree = create_test_tree()
-    print_tree_centered(currTree)
+    #currTree = create_test_tree()
+    #print_tree_centered(currTree)
 
     # Print tree
-    print_tree_centered(currTree)
+    #print_tree_centered(currTree)
 
-    search_test(currTree)
-    finger_search_test(currTree)
+    #search_test(currTree)
+    #finger_search_test(currTree)
 
     #rotate_test()
 
     #insert_test()
 
-    finger_insert_test()
+    # finger_insert_test()
+    join_test()

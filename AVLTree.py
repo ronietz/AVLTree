@@ -77,6 +77,7 @@ class AVLTree(object):
 	"""
 	def set_root(self, root):
 		self.root = root
+		self.root.parent = None
 
 	"""
 	@type parent_node: AVLNode
@@ -236,22 +237,24 @@ class AVLTree(object):
 
 
 	"""
-	rebalance tree after insertion
+	rebalance tree after insertion or join
 	@type start_node: AVLNode
 	@param start_node: starting node to balance
 	@type promote_count: int
 	@param end_node: counts promotions
+	@type action: String
+	@param action: "i" if rebalance after insert, "j" if rebalance after join
 	@rtype: int
 	@returns: promote_count - number of promotions
 	"""
-	def rebalance_tree(self, start_node, promote_count):
+	def rebalance_tree(self, start_node, promote_count, action):
 		start_node.set_height()
 
 		if start_node.is_valid_AVL_node():
 			# case 1 - problem is fixed or moved up
 			if start_node.parent is None:
 				return promote_count + 1
-			return self.rebalance_tree(start_node.parent, promote_count + 1)
+			return self.rebalance_tree(start_node.parent, promote_count + 1, action)
 
 		balance_factor = start_node.get_balance_factor()
 		if balance_factor == 2:
@@ -267,12 +270,15 @@ class AVLTree(object):
 			if start_node.left.get_balance_factor() in {0, -1}:
 				# case 2 - single rotation right
 				self.rotate(start_node, start_node.left, 'r')
+
 			else:
 				# case 3 - double rotation left and right
 				new_child, new_parent = self.rotate(start_node.left, start_node.left.right, 'l')
 				self.rotate(new_parent.parent, new_parent, 'r')
-
-		return promote_count
+		if action == "i":
+			return promote_count
+		if action == "j":
+			return self.rebalance_tree(start_node.parent, promote_count + 1, action)
 
 	"""
 	get a key and a value to insert to the dictionary and create a new valid leaf with virtual leafs
@@ -323,7 +329,7 @@ class AVLTree(object):
 				new_node.parent.set_height()
 			# the parent is a leaf
 			else:
-				promote_count = self.rebalance_tree(new_node, -1)
+				promote_count = self.rebalance_tree(new_node, -1, "i")
 		return new_node, promote_count
 
 
@@ -386,9 +392,73 @@ class AVLTree(object):
 	@pre: node is a real pointer to a node in self
 	"""
 	def delete(self, node):
-		return	
+		return
 
-	
+	"""
+	connect root of shorter tree and node of taller tree as children of connector_node
+	and connect connector_node to the taller tree.
+	@type node: AVLNode
+	@param node: the node that is to be connected
+	@type root: AVLNode
+	@param root: the root of the shorter tree
+	@type connector_node: AVLNode
+	@param connector_node: an AVLNode that should become parent of node and root and child of node.parent
+	@type direction: String
+	@param direction: the direction of the shorter tree 
+	@pre: direction == 'l' if root is smaller in keys, and 'r' if root is larger in keys.
+	The height difference between the node and the root is at most 1.
+	"""
+	def connect_trees(self, node, root, connector_node, direction_of_root):
+		if direction_of_root == 'l':
+			# connect root to the left
+			node.parent.left = connector_node
+			connector_node.parent = node.parent
+			connector_node.right = node
+			connector_node.left = root
+		else:
+			# connect root to the right
+			node.parent.right = connector_node
+			connector_node.parent = node.parent
+			connector_node.right = root
+			connector_node.left = node
+		node.parent = connector_node
+		root.parent = connector_node
+
+	"""joins self with item and another AVLTree
+
+		@type tree2: AVLTree 
+		@param tree2: a dictionary to be joined with self
+		@type connector_node: AVLNode
+		@param connector_node: an AVLNode that should become the new root. 
+		@pre: all keys in self are smaller than key and all keys in tree2 are larger than key,
+		or the opposite way. connector_node.key is between the trees values. self and tree2 has the same height. 
+		"""
+	def join_same_height(self, tree2, connector_node):
+		if connector_node.key > tree2.root.key:
+			connector_node.left = tree2.root
+			connector_node.right = self.root
+		else:
+			connector_node.left = self.root
+			connector_node.right = tree2.root
+		connector_node.right.parent = connector_node
+		connector_node.left.parent = connector_node
+		self.set_root(connector_node)
+		self.root.set_height()
+
+	"""
+	walks on the tree in the given direction until finding node that it's height equals height or 1 shorter
+	@return the node that was found
+	"""
+	def find_node_at_height(self, height, direction):
+		node = self.root
+		if direction == 'l':
+			while node.height > height and node.left.is_real_node():
+				node = node.left
+			return node
+		while node.height > height and node.right.is_real_node():
+			node = node.right
+		return node
+
 	"""joins self with item and another AVLTree
 
 	@type tree2: AVLTree 
@@ -401,7 +471,35 @@ class AVLTree(object):
 	or the opposite way
 	"""
 	def join(self, tree2, key, val):
-		return
+		# creat connector node
+		connector_node = AVLNode(key, val)
+
+		# if the trees equally tall, join them
+		if tree2.root.height == self.root.height:
+			return self.join_same_height(tree2, connector_node)
+
+		# else find the taller tree and set as self
+		if tree2.root.height > self.root.height:
+			temp_root = self.root
+			self.root = tree2.root
+			tree2.root = temp_root
+
+		# find direction to connect
+		if key < self.root.key:
+			direction = 'l'
+		else:
+			direction = 'r'
+
+		# find node at self that it's height is equal to tree2.root or shorter by 1
+		node = self.find_node_at_height(tree2.root.height, direction)
+
+		# connect node and tree2.root as children of connector_node
+		self.connect_trees(node, tree2.root, connector_node, direction)
+
+		# rebalance tree
+		connector_node.set_height()
+		self.rebalance_tree(connector_node.parent, 0, "j")
+
 
 
 	"""splits the dictionary at a given node
