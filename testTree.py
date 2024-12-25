@@ -474,6 +474,19 @@ def delete_test(currTree):
     node = currTree.root.left
     currTree.delete(node)
 
+def split_test(tree):
+    # node = tree.search(9)[0]
+    # tree.split(node)
+
+    node = tree.search(3)[0]
+    tree.split(node)
+
+    node = tree.search(6)[0]
+    tree.split(node)
+    noy = 5
+
+
+
 if __name__ == '__main__':
     currTree = create_test_tree()
 
@@ -494,5 +507,8 @@ if __name__ == '__main__':
 
     # finger_insert_test()
     #join_test()
-    delete_test(currTree)
+    # delete_test(currTree)
+    print_tree_centered(currTree)
+    split_test(currTree)
+
     print_tree_centered(currTree)

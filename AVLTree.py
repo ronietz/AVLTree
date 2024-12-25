@@ -128,7 +128,7 @@ class AVLTree(object):
 	@param starting_node: a node which we start the search from in direction up->down
 	@param ending_key: a key to be searched
 	@rtype: (AVLNode,int)
-	@returns: a tuple (x,e.p) where x is the node corresponding to key (or None if not found),
+	@returns: a tuple (x,e,p) where x is the node corresponding to key (or None if not found),
 	and e is the number of edges on the path between the starting node and ending node+1, and p is the parent node
 	"""
 
@@ -525,13 +525,13 @@ class AVLTree(object):
 				new_node_to_rotate = brother.left
 				self.rotate(brother, new_node_to_rotate, "r")
 				# second rotate
-				self.use_print_function()
+				self.use_print_function(self)
 				self.rotate(parent, new_node_to_rotate, dire)
 			else:
 				new_node_to_rotate = brother.right
 				self.rotate(brother, new_node_to_rotate, "l")
 				# second rotate
-				self.use_print_function()
+				self.use_print_function(self)
 				self.rotate(parent, new_node_to_rotate, dire)
 
 			# fix tree heights - go up and decrease the parents height if needed
@@ -576,9 +576,9 @@ class AVLTree(object):
 
 
 	###DELETE BEFORE COMMITE
-	def use_print_function(self):
+	def use_print_function(self, tree):
 		from testTree import print_tree_centered  # Import inside the function
-		print_tree_centered(self)
+		print_tree_centered(tree)
 
 	"""deletes node from the dictionary
 
@@ -707,7 +707,38 @@ class AVLTree(object):
 	dictionary larger than node.key.
 	"""
 	def split(self, node):
-		return None, None
+		left_tree_to_return = None
+		right_tree_to_return = None
+		original_node_key = node.key
+		while node != None:
+			# if the original node is smaller than this node
+			if node.key >= original_node_key:
+				# just add to the right tree and continue
+				if node.right.key != None:
+					sub_tree = AVLTree()
+					sub_tree.set_root(node.right)
+					if right_tree_to_return == None:
+						right_tree_to_return = sub_tree
+					else:
+						sub_tree.join(right_tree_to_return, node.key, node.value)
+
+			# if the original node is bigger than this node
+			if node.key <= original_node_key:
+				if node.left.key != None:
+					sub_tree = AVLTree()
+					sub_tree.set_root = node.left
+					if left_tree_to_return == None:
+						left_tree_to_return = sub_tree
+					else:
+						sub_tree = AVLTree()
+						sub_tree.set_root = node.left
+						sub_tree.join(left_tree_to_return, node.key, node.value)
+
+			node = node.parent
+
+		self.use_print_function(left_tree_to_return)
+		self.use_print_function(right_tree_to_return)
+		return left_tree_to_return, right_tree_to_return
 
 	
 	"""returns an array representing dictionary 
