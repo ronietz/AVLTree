@@ -123,6 +123,7 @@ def create_test_tree():
     treeNode5.right = treeNode6
     treeNode6.parent = treeNode4
     treeNode6.height = 0
+    treeNode6.value = "noy"
 
 
     treeNode20 = AVLNode(None, "")
@@ -434,7 +435,7 @@ def join_test():
 def delete_test(currTree):
     #case4 - 2 rotates
     print("------------- case4 - 2 rotates --------------")
-    node = currTree.get_max()
+    node = currTree.max_node()
     currTree.delete(node)
     print_tree_centered(currTree)
 
@@ -494,9 +495,7 @@ if __name__ == '__main__':
     #print_tree_centered(currTree)
 
     #search_test(currTree)
-    #finger_search_test(currTree)
-
-
+    # finger_search_test(currTree)
 
     # search_test(currTree)
     # finger_search_test(currTree)
@@ -508,7 +507,13 @@ if __name__ == '__main__':
     # finger_insert_test()
     #join_test()
     # delete_test(currTree)
-    print_tree_centered(currTree)
-    split_test(currTree)
+    # print_tree_centered(currTree)
+    # split_test(currTree)
+
+    # noy = currTree.avl_to_array()
+    # for tup in noy:
+    #     print(str(tup[0]) + "  " + str(tup[1]))
+    # gal = 5
+
 
     print_tree_centered(currTree)

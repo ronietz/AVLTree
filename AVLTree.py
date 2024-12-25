@@ -172,23 +172,6 @@ class AVLTree(object):
 
 		return tup[0], tup[1]
 
-
-	"""searches for a the node with the maximum key (starting at the root)
-
-		@returns: the maximum node.
-		"""
-	def get_max(self):
-		maximum_node = None
-		root = self.root
-		# runs over the tree keys
-		while root.key != None:
-			if root.right.key == None:
-				maximum_node = root
-				break
-			root = root.right
-
-		return maximum_node
-
 	"""searches for a node in the dictionary corresponding to the key, starting at the max
 
 		@type key: int
@@ -201,7 +184,7 @@ class AVLTree(object):
 	def _finger_search_with_parent(self, key):
 		number_of_edges = 0
 		node_to_return = None
-		node = self.get_max()
+		node = self.max_node()
 
 		# if given key is larger than the maximum key - return None
 		if node.key != None and node.key < key:
@@ -593,7 +576,7 @@ class AVLTree(object):
 			use_decessor = True
 			node_to_delete = node
 			# replace the node with its successor or predecessor to make sure we are deleting node with one child
-			max_node = self.get_max()
+			max_node = self.max_node()
 			if max_node.key == node.key:
 				node = self.get_predecessor(node)
 			else:
@@ -746,8 +729,29 @@ class AVLTree(object):
 	@rtype: list
 	@returns: a sorted list according to key of touples (key, value) representing the data structure
 	"""
+	def avl_to_array_rec(self, arr_to_return, node):
+		if node.key == None:
+			return
+
+		self.avl_to_array_rec(arr_to_return, node.left)
+		tup = node.key, node.value
+		arr_to_return.append(tup)
+		self.avl_to_array_rec(arr_to_return, node.right)
+
+	"""returns an array representing dictionary 
+
+		@rtype: list
+		@returns: a sorted list according to key of touples (key, value) representing the data structure
+		"""
 	def avl_to_array(self):
-		return None
+		arr_to_return = []
+		node = self.root
+		if node.key != None:
+			self.avl_to_array_rec(arr_to_return, node.left)
+			tup = node.key, node.value
+			arr_to_return.append(tup)
+			self.avl_to_array_rec(arr_to_return, node.right)
+		return arr_to_return
 
 
 	"""returns the node with the maximal key in the dictionary
@@ -756,7 +760,16 @@ class AVLTree(object):
 	@returns: the maximal node, None if the dictionary is empty
 	"""
 	def max_node(self):
-		return None
+		maximum_node = None
+		root = self.root
+		# runs over the tree keys
+		while root.key != None:
+			if root.right.key == None:
+				maximum_node = root
+				break
+			root = root.right
+
+		return maximum_node
 
 	"""returns the number of items in dictionary 
 
