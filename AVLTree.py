@@ -67,6 +67,7 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
+		self.size = 0
 		self.virtual_leaf = AVLNode(None, None)
 		self.virtual_leaf.height = -1
 
@@ -466,6 +467,8 @@ class AVLTree(object):
 					parent.right = node.left
 					node.left.parent = parent
 
+		self.size = self.size - 1
+
 	"""demote nodes height and it parent up to the root
 
 		@type node: AVLNode
@@ -781,7 +784,7 @@ class AVLTree(object):
 	@returns: the number of items in dictionary 
 	"""
 	def size(self):
-		return -1	
+		return self.size
 
 
 	"""returns the root of the tree representing the dictionary
