@@ -510,13 +510,28 @@ if __name__ == '__main__':
     # finger_insert_test()
     #join_test()
     # delete_test(currTree)
-    print_tree_centered(currTree)
-    split_test(currTree)
+    # print_tree_centered(currTree)
+    # split_test(currTree)
 
     # noy = currTree.avl_to_array()
     # for tup in noy:
     #     print(str(tup[0]) + "  " + str(tup[1]))
     # gal = 5
 
+    #join_test()
+    #print_tree_centered(currTree)
+    tree = create_empty_tree()
+    count_c = 0
+    count_e = 0
+    for item in [25, 50, 40, 30, 20, 10]:
+        n, e, c = tree.finger_insert(item, "roni")
+        count_c += c
+        count_e += e
+        print_tree_centered(tree)
+        print(e)
+    print(count_c)
+    print(count_e)
 
-    print_tree_centered(currTree)
+
+
+

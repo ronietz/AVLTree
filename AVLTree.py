@@ -186,7 +186,9 @@ class AVLTree(object):
 		number_of_edges = 0
 		node_to_return = None
 		node = self.max_node()
-
+		# if node is root of empty tree
+		if node == None:
+			return node_to_return, number_of_edges, node
 		# if given key is larger than the maximum key - return None
 		if node.key != None and node.key < key:
 			return node_to_return, number_of_edges, node
@@ -775,7 +777,7 @@ class AVLTree(object):
 		maximum_node = None
 		root = self.root
 		# runs over the tree keys
-		while root.key != None:
+		while root != None and root.key != None:
 			if root.right.key == None:
 				maximum_node = root
 				break
