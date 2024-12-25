@@ -476,14 +476,17 @@ def delete_test(currTree):
     currTree.delete(node)
 
 def split_test(tree):
+    print("------------- case1 - split 9 --------------")
     node = tree.search(9)[0]
     tree.split(node)
 
-    # node = tree.search(3)[0]
-    # tree.split(node)
-    #
-    # node = tree.search(6)[0]
-    # tree.split(node)
+    print("------------- case2 - split 3 --------------")
+    node = tree.search(3)[0]
+    tree.split(node)
+
+    print("------------- case3 - split 6 --------------")
+    node = tree.search(6)[0]
+    tree.split(node)
     noy = 5
 
 

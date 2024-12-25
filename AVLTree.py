@@ -703,12 +703,14 @@ class AVLTree(object):
 				if node.right.key != None:
 					sub_tree = AVLTree()
 					sub_tree.set_root(node.right)
+					# if the arr to return is empty
 					if right_tree_to_return == None:
 						right_tree_to_return = sub_tree
 						if node.key != original_node_key:
-							left_tree_to_return.insert(node.key, node.value)
+							# need to fix!!!!!!
+							right_tree_to_return.insert(node.key, node.value)
 					else:
-						sub_tree.join(right_tree_to_return, node.key, node.value)
+						right_tree_to_return.join(sub_tree, node.key, node.value)
 
 			# if the original node is bigger than this node
 			if node.key <= original_node_key:
@@ -718,15 +720,18 @@ class AVLTree(object):
 					if left_tree_to_return == None:
 						left_tree_to_return = sub_tree
 						if node.key != original_node_key:
+							# need to fix!!!!!!
 							left_tree_to_return.insert(node.key, node.value)
 					else:
 						sub_tree = AVLTree()
 						sub_tree.set_root = node.left
-						sub_tree.join(left_tree_to_return, node.key, node.value)
+						left_tree_to_return.join(sub_tree, node.key, node.value)
 
 			node = node.parent
 
+		print("------------- smaller tree --------------")
 		self.use_print_function(left_tree_to_return)
+		print("------------- bigger tree --------------")
 		self.use_print_function(right_tree_to_return)
 		return left_tree_to_return, right_tree_to_return
 
