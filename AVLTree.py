@@ -702,6 +702,8 @@ class AVLTree(object):
 					sub_tree.set_root(node.right)
 					if right_tree_to_return == None:
 						right_tree_to_return = sub_tree
+						if node.key != original_node_key:
+							left_tree_to_return.insert(node.key, node.value)
 					else:
 						sub_tree.join(right_tree_to_return, node.key, node.value)
 
@@ -709,9 +711,11 @@ class AVLTree(object):
 			if node.key <= original_node_key:
 				if node.left.key != None:
 					sub_tree = AVLTree()
-					sub_tree.set_root = node.left
+					sub_tree.set_root(node.left)
 					if left_tree_to_return == None:
 						left_tree_to_return = sub_tree
+						if node.key != original_node_key:
+							left_tree_to_return.insert(node.key, node.value)
 					else:
 						sub_tree = AVLTree()
 						sub_tree.set_root = node.left
