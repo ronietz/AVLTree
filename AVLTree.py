@@ -188,10 +188,10 @@ class AVLTree(object):
 		node = self.max_node()
 		# if node is root of empty tree
 		if node == None:
-			return node_to_return, 1, node
+			return node_to_return, number_of_edges, node
 		# if given key is larger than the maximum key - return None
 		if node.key != None and node.key < key:
-			return node_to_return, number_of_edges, node
+			return node_to_return, 1, node
 		# runs over the tree keys and find the first node that smaller than the given key
 		while node.parent != None and node.parent.key != None:
 			# if the given key is bigger or equal to the key we are in - go to the node parent
@@ -372,12 +372,6 @@ class AVLTree(object):
 		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
 		return new_node, e, promote_count
 
-	"""deletes node from the parent
-
-		@type node: AVLNode
-		@pre: node is a real pointer to a node in self
-		"""
-
 	"""
     connect root of shorter tree and node of taller tree as children of connector_node
     and connect connector_node to the taller tree.
@@ -445,6 +439,12 @@ class AVLTree(object):
 		while node.height > height and node.right.is_real_node():
 			node = node.right
 		return node
+
+	"""deletes node from the parent
+
+			@type node: AVLNode
+			@pre: node is a real pointer to a node in self
+	"""
 
 	def delete_node(self, node):
 		parent = node.parent
