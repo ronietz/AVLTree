@@ -520,18 +520,35 @@ if __name__ == '__main__':
 
     #join_test()
     #print_tree_centered(currTree)
+    # tree = create_empty_tree()
+    # count_c = 0
+    # count_e = 0
+    # for item in [25, 50, 40, 30, 20, 10]:
+    #     n, e, c = tree.finger_insert(item, "roni")
+    #     count_c += c
+    #     count_e += e
+    #     print_tree_centered(tree)
+    #     print(e)
+    # print(count_c)
+    # print(count_e)
+
+
+
+
+    # # gal = 5
+    # tree1 = create_empty_tree()
+    # tree1.insert(1, "noy")
+    # tup = tree1.finger_search(3)
+    # if tup[1] != 1:
+    #     print("finger_search_test - Error in existing node")
+
     tree = create_empty_tree()
-    count_c = 0
-    count_e = 0
-    for item in [25, 50, 40, 30, 20, 10]:
-        n, e, c = tree.finger_insert(item, "roni")
-        count_c += c
-        count_e += e
+    counter_e = 0
+    for item in [25,50,40,30,20,10]:
+        n,e,c = tree.finger_insert(item, "roni")
+        counter_e += e
+        print("----------------- curr tree")
         print_tree_centered(tree)
-        print(e)
-    print(count_c)
-    print(count_e)
-
-
-
-
+        print("------- e:  " + str(e))
+    print("--- counter e" + str(counter_e))
+    print_tree_centered(currTree)

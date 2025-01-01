@@ -21,6 +21,8 @@ class AVLNode(object):
 		self.right = None
 		self.parent = None
 		self.height = -1
+		#delete!!!
+		self.size = 5
 		
 
 	"""returns whether self is not a virtual node 
@@ -68,6 +70,7 @@ class AVLTree(object):
 	def __init__(self):
 		self.root = None
 		self.size = 0
+		# A virtual node used for null children
 		self.virtual_leaf = AVLNode(None, None)
 		self.virtual_leaf.height = -1
 
@@ -191,7 +194,7 @@ class AVLTree(object):
 			return node_to_return, number_of_edges, node
 		# if given key is larger than the maximum key - return None
 		if node.key != None and node.key < key:
-			return node_to_return, number_of_edges, node
+			return node_to_return, 1, node
 		# runs over the tree keys and find the first node that smaller than the given key
 		while node.parent != None and node.parent.key != None:
 			# if the given key is bigger or equal to the key we are in - go to the node parent
@@ -370,11 +373,6 @@ class AVLTree(object):
 		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
 		return new_node, e, promote_count
 
-	"""deletes node from the parent
-
-		@type node: AVLNode
-		@pre: node is a real pointer to a node in self
-		"""
 
 	"""
     connect root of shorter tree and node of taller tree as children of connector_node
@@ -444,6 +442,11 @@ class AVLTree(object):
 			node = node.right
 		return node
 
+	"""deletes node from the parent
+
+			@type node: AVLNode
+			@pre: node is a real pointer to a node in self
+			"""
 	def delete_node(self, node):
 		parent = node.parent
 		if parent.key > node.key:
@@ -513,13 +516,11 @@ class AVLTree(object):
 				new_node_to_rotate = brother.left
 				self.rotate(brother, new_node_to_rotate, "r")
 				# second rotate
-				self.use_print_function(self)
 				self.rotate(parent, new_node_to_rotate, dire)
 			else:
 				new_node_to_rotate = brother.right
 				self.rotate(brother, new_node_to_rotate, "l")
 				# second rotate
-				self.use_print_function(self)
 				self.rotate(parent, new_node_to_rotate, dire)
 
 			# fix tree heights - go up and decrease the parents height if needed
@@ -533,7 +534,11 @@ class AVLTree(object):
 			parent.height = parent.height - 1
 			self.demote_node(parent.parent)
 
+	"""finds the successor of a given node
 
+			@type node: AVLNode
+			@pre: node is a real pointer to a node in self
+			"""
 	def get_successor(self, node):
 		# if the node hase right child return the min of its tree
 		if node.right.key != None:
@@ -548,6 +553,11 @@ class AVLTree(object):
 			parent = parent.parent
 		return parent
 
+	"""finds the predecessor of a given node
+
+				@type node: AVLNode
+				@pre: node is a real pointer to a node in self
+				"""
 	def get_predecessor(self, node):
 		# if the node hase right child return the min of its tree
 		if node.left.key != None:
@@ -563,11 +573,6 @@ class AVLTree(object):
 		return parent
 
 
-	###DELETE BEFORE COMMITE
-	def use_print_function(self, tree):
-		from testTree import print_tree_centered  # Import inside the function
-		print_tree_centered(tree)
-
 	"""deletes node from the dictionary
 
 	@type node: AVLNode
@@ -577,6 +582,7 @@ class AVLTree(object):
 		use_decessor = False
 		node_to_replace = None
 		node_to_delete = node
+		# if the node exists
 		if node.left.key != None and node.right.key != None:
 			use_decessor = True
 			node_to_delete = node
@@ -698,6 +704,7 @@ class AVLTree(object):
 		left_tree_to_return = None
 		right_tree_to_return = None
 		original_node_key = node.key
+		# if the node exists
 		while node != None:
 			# if the original node is smaller than this node
 			if node.key >= original_node_key:
@@ -708,8 +715,8 @@ class AVLTree(object):
 					# if the arr to return is empty
 					if right_tree_to_return == None:
 						right_tree_to_return = sub_tree
+						# if the node need to be added to the new tree
 						if node.key != original_node_key:
-							# need to fix!!!!!!
 							right_tree_to_return.insert(node.key, node.value)
 					else:
 						right_tree_to_return.join(sub_tree, node.key, node.value)
@@ -719,10 +726,11 @@ class AVLTree(object):
 				if node.left.key != None:
 					sub_tree = AVLTree()
 					sub_tree.set_root(node.left)
+					# if the arr to return is empty
 					if left_tree_to_return == None:
 						left_tree_to_return = sub_tree
+						# if the node need to be added to the new tree
 						if node.key != original_node_key:
-							# need to fix!!!!!!
 							left_tree_to_return.insert(node.key, node.value)
 					else:
 						sub_tree = AVLTree()
@@ -731,10 +739,6 @@ class AVLTree(object):
 
 			node = node.parent
 
-		print("------------- smaller tree --------------")
-		self.use_print_function(left_tree_to_return)
-		print("------------- bigger tree --------------")
-		self.use_print_function(right_tree_to_return)
 		return left_tree_to_return, right_tree_to_return
 
 	
