@@ -563,6 +563,22 @@ if __name__ == '__main__':
     # if tup[1] != 1:
     #     print("finger_search_test - Error in existing node")
 
+    print("-------delete root empty tree-----")
+    tree = create_empty_tree()
+    tree.insert(10, "bla")
+    print_tree_centered(tree)
+    tree.delete(tree.root)
+    print_tree_centered(tree)
+    print("-------delete root full tree-----")
+    tree.insert(12, "")
+    tree.insert(13, "bla")
+    tree.insert(14, "bla")
+    print_tree_centered(tree)
+    tree.delete(tree.root)
+    print_tree_centered(tree)
+
+
+"""
     tree = create_empty_tree()
     counter_e = 0
     for item in [25,50,40,30,20,10]:
@@ -576,6 +592,13 @@ if __name__ == '__main__':
     #size_test()
 
     tree = create_empty_tree()
+    for i in range(1, 101):
+        tree.insert(i, "")
+    print_tree_centered(tree)
+    """
+
+"""
+    tree = create_empty_tree()
     count_c = 0
     count_e = 0
     for item in range(1, 20):
@@ -586,6 +609,9 @@ if __name__ == '__main__':
         print(e)
     print(count_c)
     print(count_e)
+
+"""
+
 
 
 

@@ -597,8 +597,6 @@ class AVLTree(object):
 				node = self.get_successor(node)
 			node_to_replace = node
 
-		#### what will we do in a case this is tha maximal node when there is no successor????
-
 		# check which side is the node
 		parent = node.parent
 		brother = node.parent.left
