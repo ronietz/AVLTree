@@ -489,6 +489,27 @@ def split_test(tree):
     tree.split(node)
     noy = 5
 
+def size_test():
+    print("------------- case1 - empty (0)--------------")
+    tree1 = create_empty_tree()
+    print(tree1.size())
+    print("------------- case2 - insert 2 nodes (2)--------------")
+    tree1.insert(10, "bla")
+    tree1.insert(12, "bla")
+    print(tree1.size())
+
+    tree2 = create_empty_tree()
+    tree2.insert(1, "bla")
+    tree2.insert(2, "bla")
+    tree2.insert(3, "")
+    tree2.insert(4, "")
+    tree2.insert(5, "")
+    print("------------- case3 - delete node (4) --------------")
+    tree2.delete(tree2.search(4)[0])
+    print(tree2.size())
+    print("------------- case4 - join trees (7) --------------")
+    tree2.join(tree1, 8, "")
+    print(tree2.size())
 
 
 if __name__ == '__main__':
@@ -552,3 +573,21 @@ if __name__ == '__main__':
         print("------- e:  " + str(e))
     print("--- counter e" + str(counter_e))
     print_tree_centered(currTree)
+    #size_test()
+
+    tree = create_empty_tree()
+    count_c = 0
+    count_e = 0
+    for item in range(1, 20):
+        n, e, c = tree.finger_insert(item, "roni")
+        count_c += c
+        count_e += e
+        print_tree_centered(tree)
+        print(e)
+    print(count_c)
+    print(count_e)
+
+
+
+
+

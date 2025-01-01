@@ -21,8 +21,7 @@ class AVLNode(object):
 		self.right = None
 		self.parent = None
 		self.height = -1
-		#delete!!!
-		self.size = 5
+
 		
 
 	"""returns whether self is not a virtual node 
@@ -69,8 +68,8 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
-		self.size = 0
 		# A virtual node used for null children
+		self._size = 0
 		self.virtual_leaf = AVLNode(None, None)
 		self.virtual_leaf.height = -1
 
@@ -344,6 +343,8 @@ class AVLTree(object):
 
 		#insert new node to place
 		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
+		# add 1 to size
+		self._size = self._size + 1
 		return new_node, e, promote_count
 
 
@@ -446,7 +447,9 @@ class AVLTree(object):
 
 			@type node: AVLNode
 			@pre: node is a real pointer to a node in self
-			"""
+
+	"""
+
 	def delete_node(self, node):
 		parent = node.parent
 		if parent.key > node.key:
@@ -472,7 +475,7 @@ class AVLTree(object):
 					parent.right = node.left
 					node.left.parent = parent
 
-		self.size = self.size - 1
+		self._size = self._size - 1
 
 	"""demote nodes height and it parent up to the root
 
@@ -662,6 +665,10 @@ class AVLTree(object):
 		# creat connector node
 		connector_node = AVLNode(key, val)
 
+		# save sizes
+		self_size = self._size
+		tree2_size = tree2._size
+
 		# if the trees equally tall, join them
 		if tree2.root.height == self.root.height:
 			return self.join_same_height(tree2, connector_node)
@@ -687,6 +694,9 @@ class AVLTree(object):
 		# rebalance tree
 		connector_node.set_height()
 		self.rebalance_tree(connector_node.parent, 0, "j")
+
+		# set new size of tree
+		self._size = self_size + tree2_size + 1
 
 
 
@@ -795,7 +805,7 @@ class AVLTree(object):
 	@returns: the number of items in dictionary 
 	"""
 	def size(self):
-		return self.size
+		return self._size
 
 
 	"""returns the root of the tree representing the dictionary
