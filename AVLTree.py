@@ -372,6 +372,7 @@ class AVLTree(object):
 
 		# insert new node to place
 		new_node, promote_count = self._insert_node_to_parent(new_node, parent)
+		self._size = self._size + 1
 		return new_node, e, promote_count
 
 
@@ -585,6 +586,21 @@ class AVLTree(object):
 		use_decessor = False
 		node_to_replace = None
 		node_to_delete = node
+
+		# TEMPORERY - DO DELETE AFTER FIX!!!!!
+		if node.parent == None:
+			if self.size() == 1:
+				self.set_root(self.virtual_leaf)
+				self._size = self._size - 1
+				return
+			if self.size() == 2:
+				if (node.left.key != None):
+					self.set_root(node.left)
+				else:
+					self.set_root(node.right)
+				return
+		# end of temp fix
+
 		# if the node exists
 		if node.left.key != None and node.right.key != None:
 			use_decessor = True
