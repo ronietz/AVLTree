@@ -452,7 +452,16 @@ class AVLTree(object):
 
 	def delete_node(self, node):
 		parent = node.parent
-		if parent.key > node.key:
+		#deleting the root with one or none children
+		if parent == None:
+			if node.right.key != None:
+				self.root = node.right
+			elif node.left.key != None:
+				self.root = node.left
+			else:
+				self.root = None
+
+		elif parent.key > node.key:
 			# if a leaf only delete, else pass it child
 			if node.height == 0:
 				parent.left = self.virtual_leaf
@@ -585,6 +594,9 @@ class AVLTree(object):
 		use_decessor = False
 		node_to_replace = None
 		node_to_delete = node
+
+		parent = node.parent
+
 		# if the node exists
 		if node.left.key != None and node.right.key != None:
 			use_decessor = True
@@ -596,14 +608,16 @@ class AVLTree(object):
 			else:
 				node = self.get_successor(node)
 			node_to_replace = node
+		elif parent is None:
+			self.delete_node(node)
+			return
+
+
 
 		# check which side is the node
-		parent = node.parent
 		brother = node.parent.left
-		node_dir = "r"
 		if node.key < node.parent.key:
 			brother = node.parent.right
-			node_dir = "l"
 
 		# if the other child of my parent is lower than the given node - demote and rotate
 		if brother.key == None or brother.height == node.height - 1:
@@ -709,8 +723,8 @@ class AVLTree(object):
 	dictionary larger than node.key.
 	"""
 	def split(self, node):
-		left_tree_to_return = None
-		right_tree_to_return = None
+		left_tree_to_return = AVLTree()
+		right_tree_to_return = AVLTree()
 		original_node_key = node.key
 		# if the node exists
 		while node != None:
@@ -746,7 +760,6 @@ class AVLTree(object):
 						left_tree_to_return.join(sub_tree, node.key, node.value)
 
 			node = node.parent
-
 		return left_tree_to_return, right_tree_to_return
 
 	
