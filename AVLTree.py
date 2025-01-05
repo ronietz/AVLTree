@@ -758,8 +758,6 @@ class AVLTree(object):
 						if node.key != original_node_key:
 							left_tree_to_return.insert(node.key, node.value)
 					else:
-						sub_tree = AVLTree()
-						sub_tree.set_root = node.left
 						left_tree_to_return.join(sub_tree, node.key, node.value)
 
 			node = node.parent
