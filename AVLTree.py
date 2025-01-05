@@ -67,11 +67,11 @@ class AVLTree(object):
 	Constructor, you are allowed to add more fields.
 	"""
 	def __init__(self):
-		self.root = None
 		# A virtual node used for null children
 		self._size = 0
 		self.virtual_leaf = AVLNode(None, None)
 		self.virtual_leaf.height = -1
+		self.root = self.virtual_leaf
 
 	"""
 	set new root
@@ -394,13 +394,15 @@ class AVLTree(object):
 	def connect_trees(self, node, root, connector_node, direction_of_root):
 		if direction_of_root == 'l':
 			# connect root to the left
-			node.parent.left = connector_node
+			if node.parent != None:
+				node.parent.left = connector_node
 			connector_node.parent = node.parent
 			connector_node.right = node
 			connector_node.left = root
 		else:
 			# connect root to the right
-			node.parent.right = connector_node
+			if node.parent != None:
+				node.parent.right = connector_node
 			connector_node.parent = node.parent
 			connector_node.right = root
 			connector_node.left = node
@@ -418,7 +420,7 @@ class AVLTree(object):
         """
 
 	def join_same_height(self, tree2, connector_node):
-		if connector_node.key > tree2.root.key:
+		if tree2.root.key == None or connector_node.key > tree2.root.key:
 			connector_node.left = tree2.root
 			connector_node.right = self.root
 		else:
@@ -595,7 +597,6 @@ class AVLTree(object):
 		use_decessor = False
 		node_to_replace = None
 		node_to_delete = node
-
 		parent = node.parent
 
 		# if the node exists
@@ -706,7 +707,8 @@ class AVLTree(object):
 
 		# rebalance tree
 		connector_node.set_height()
-		self.rebalance_tree(connector_node.parent, 0, "j")
+		if connector_node.parent != None:
+			self.rebalance_tree(connector_node.parent, 0, "j")
 
 		# set new size of tree
 		self._size = self_size + tree2_size + 1
