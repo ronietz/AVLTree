@@ -726,8 +726,8 @@ class AVLTree(object):
 	dictionary larger than node.key.
 	"""
 	def split(self, node):
-		left_tree_to_return = AVLTree()
-		right_tree_to_return = AVLTree()
+		left_tree_to_return = None
+		right_tree_to_return = None
 		original_node_key = node.key
 		# if the node exists
 		while node != None:
@@ -763,6 +763,11 @@ class AVLTree(object):
 						left_tree_to_return.join(sub_tree, node.key, node.value)
 
 			node = node.parent
+		# return empty tree if the tree is none
+		if left_tree_to_return == None:
+			left_tree_to_return = AVLTree()
+		if right_tree_to_return == None:
+			right_tree_to_return = AVLTree()
 		return left_tree_to_return, right_tree_to_return
 
 	
